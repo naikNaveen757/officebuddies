@@ -11,9 +11,9 @@ const protect = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
 
-        if (req.user.role !== 'bot') {
-            return res.status(403).json({ message: 'You do not have permission to access this route' });
-        }
+        // if (req.user.role !== 'bot') {
+        //     return res.status(403).json({ message: 'You do not have permission to access this route' });
+        // }
 
         next();
     } catch (err) {
