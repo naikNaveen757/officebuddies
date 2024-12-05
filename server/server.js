@@ -8,8 +8,8 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(express.json()); // Parse JSON payloads
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(express.json()); 
+app.use(cors());
 
 const connectDB = async () => {
     try {

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "../app/globals.css";
 
 const Loading = () => {
-  const words = [" Welcome Buddy "];
+  const words = [" Welcome Buddy  "];
   let i = 0;
   let j = 0;
   let currentWord = "";

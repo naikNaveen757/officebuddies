@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-// User registration validation schema
 const registerValidation = Joi.object({
     empId: Joi.string().alphanum().max(4).required().messages({
         'string.max': 'Employee ID must not exceed 4 characters.',

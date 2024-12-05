@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Import controllers
+//controllers
 const { registerUser, loginUser } = require('../controllers/authController');
 const { getUpcomingBirthdays } = require('../controllers/birthdayController');
 const { createBill } = require('../controllers/billController');  
@@ -12,11 +12,8 @@ const { protect } = require('../middleware/authMiddleware');
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 
-// Bill routes
-router.post('/bill', createBill);
-//router.use('/bill', billRoutes); 
 
-// Birthday routes
-router.get('/birthdays', getUpcomingBirthdays);
+router.post('/bill', protect, createBill);
+router.get('/birthdays', protect, getUpcomingBirthdays);
 
 module.exports = router;
