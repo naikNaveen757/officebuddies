@@ -1,14 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const billSchema = new mongoose.Schema({
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    description: { type: String, required: true },
-    amount: { type: Number, required: true },
-    participants: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
-    paidStatus: { type: Boolean, default: false },
-    paid: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+const BillSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  amount: { type: Number, required: true },
+  participants: [
+    {
+      empId: { type: String, required: true }, 
+      share: { type: Number, required: true },
+    },
+  ],
+  createdAt: { type: Date, default: Date.now },
 });
 
-const Bill = mongoose.model('Bill', billSchema);
-
-module.exports = Bill;
+module.exports = mongoose.model("Bill", BillSchema);

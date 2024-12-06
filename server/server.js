@@ -25,7 +25,7 @@ const connectDB = async () => {
 connectDB();
 
 // Routes
-app.use('/api', combinedRoutes);
+app.use('/ofcbd', combinedRoutes);
 
 // 404 Error Handling for Unknown Routes
 app.use((req, res, next) => {

@@ -1,56 +1,72 @@
-const Bill = require('../models/Bill');
-const User = require('../models/User');
+const mongoose = require("mongoose");
+const Bill = require("../models/Bill");
 
 const createBill = async (req, res) => {
-    const { description, amount, participants } = req.body;
-    try {
-        const participantUsers = await User.find({ empId: { $in: participants } });
-
-        if (participantUsers.length !== participants.length) {
-            return res.status(400).json({ message: 'Some participants not found' });
-        }
-
-        const participantObjectIds = participantUsers.map(user => user._id);
-
-        const bill = new Bill({
-            createdBy: req.user.id,
-            description,
-            amount,
-            participants: participantObjectIds,
-            status: 'unpaid',
-        });
-
-        await bill.save();
-
-        res.status(201).json(bill);
-    } catch (err) {
-        res.status(500).json({ message: 'Error creating bill', error: err.message });
+  try {
+    if (req.body.participants) {
+      req.body.participants = req.body.participants.map((participant) => ({
+        ...participant,
+        empId: participant.empId,
+      }));
     }
+
+    // Create and save the new bill
+    const newBill = new Bill(req.body);
+    await newBill.save();
+
+    res
+      .status(201)
+      .json({ message: "Bill created successfully", bill: newBill });
+  } catch (error) {
+    console.error("Error creating bill:", error);
+    res.status(400).json({ message: "Failed to create bill", error });
+  }
 };
 
-const payBill = async (req, res) => {
-    const { billId } = req.params;
-    try {
-        const bill = await Bill.findById(billId);
+// Fetch all bills along with payment status
+const getBills = async (req, res) => {
+  try {
+    const bills = await Bill.find().populate("participants.empId");
 
-        if (!bill) {
-            return res.status(404).json({ message: 'Bill not found' });
-        }
-
-        if (bill.status === 'paid') {
-            return res.status(400).json({ message: 'Bill is already paid' });
-        }
-
-        bill.status = 'paid';
-        await bill.save();
-
-        res.status(200).json({ message: 'Bill paid successfully', bill });
-    } catch (err) {
-        res.status(500).json({ message: 'Error processing payment', error: err.message });
+    if (!bills) {
+      return res.status(404).json({ message: "No bills found" });
     }
+
+    return res.status(200).json({ bills });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+const updatePaymentStatus = async (req, res) => {
+  const { billId } = req.params;
+  const { participantId } = req.body;
+
+  try {
+    const updatedBill = await Bill.findOneAndUpdate(
+      { _id: billId, "participants.empId": participantId },
+      { $set: { "participants.$.status": "Paid" } },
+      { new: true }
+    );
+
+    if (!updatedBill) {
+      return res.status(404).json({ error: "Bill or participant not found" });
+    }
+
+    res.status(200).json({
+      message: `Payment status updated to "Paid" for participant ${participantId}`,
+      updatedBill,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the payment status" });
+  }
 };
 
 module.exports = {
-    createBill,
-    payBill
+  createBill,
+  getBills,
+  updatePaymentStatus,
 };
