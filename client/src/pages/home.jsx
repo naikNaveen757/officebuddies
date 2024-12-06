@@ -1,8 +1,6 @@
 import React from "react";
-import Header from "../components/Header";
-import List from "../components/UserList";
-// import ProgressBar from "@/components/Progressbar";
-import ProgressBar from "@ramonak/react-progress-bar";
+import Header from "../components/Common/Header";
+import List from "../components/Common/UserList";
 
 const HomePage = () => {
   return (

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import "../app/globals.css";
+import "../../app/globals.css";
 
 const Loading = () => {
   const words = [" Welcome Buddy  "];
