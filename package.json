@@ -1,0 +1,12 @@
+{
+  "name": "NaveensPersonal-project",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm run start --prefix server",  
+    "frontend": "npm run dev --prefix client",  
+    "dev": "concurrently \"npm run frontend\" \"npm run start\"" 
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0" 
+  }
+}
