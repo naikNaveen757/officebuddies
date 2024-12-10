@@ -9,21 +9,23 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user"); // Default role is "user"
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
     try {
       const response = await axios.post("http://localhost:5000/api/login", {
         email,
         password,
-        role, // Include the role in the API request
       });
 
       // Save token and user info in localStorage
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("userId", response.data.userId);
 
       console.log("User logged in:", response.data);
 
@@ -34,7 +36,8 @@ const Login = () => {
         router.push("/home"); // Regular user home
       }
     } catch (err) {
-      setError("Invalid credentials or role. Please try again.");
+      setError("Invalid credentials. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -87,28 +90,14 @@ const Login = () => {
                 className="w-full p-2 border border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
               />
             </div>
-            <div>
-              <label
-                htmlFor="role"
-                className="block text-gray-600 dark:text-gray-300"
-              >
-                Role
-              </label>
-              <select
-                id="role"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-md dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200"
-              >
-                <option value="user">User</option>
-                <option value="organizer">Organizer</option>
-              </select>
-            </div>
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md transition"
+              className={`w-full ${
+                isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+              } text-white p-2 rounded-md transition`}
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? "Logging In..." : "Login"}
             </button>
           </form>
           <div className="text-center mt-4">
