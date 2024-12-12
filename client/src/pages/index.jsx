@@ -17,23 +17,24 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/login", {
+      const response = await axios.post("http://localhost:5000/ofcbd/login", {
         email,
         password,
       });
 
-      // Save token and user info in localStorage
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("role", response.data.role);
-      localStorage.setItem("userId", response.data.userId);
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          authToken: response.data.token,
+          role: response.data.user.role,
+          empId: response.data.user.empId,
+        })
+      );
 
-      console.log("User logged in:", response.data);
-
-      // Redirect based on role
-      if (response.data.role === "organizer") {
-        router.push("/dashboard"); // Organizer dashboard
+      if (response.data.user.role == "organizer") {
+        router.push("/dashboard");
       } else {
-        router.push("/home"); // Regular user home
+        router.push("/home");
       }
     } catch (err) {
       setError("Invalid credentials. Please try again.");
@@ -44,7 +45,7 @@ const Login = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-dark-background">
+      <div className="flex items-center justify-center bg-white dark:bg-dark-background lg:mt-16 ">
         <div className="bg-gray-300 dark:bg-gray-800 shadow-md rounded-lg w-full max-w-md p-6">
           <div className="flex justify-center h-48">
             <img src="/logo.svg" alt="Logo" className="w-64 h-64" />

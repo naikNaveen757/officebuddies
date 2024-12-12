@@ -8,8 +8,9 @@ const Header = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
-    if (authToken) {
+    const userData = JSON.parse(localStorage.getItem("userData")) ;
+    const authToken = userData ? userData.authToken : null;
+        if (authToken) {
       setIsLoggedIn(true);
     }
 

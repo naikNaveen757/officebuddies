@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Loader from "@/components/Common/Loader";
+import Loader from "../components/Common/Loader"
 import "../app/globals.css";
 import Head from "next/head";
 

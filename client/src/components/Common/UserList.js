@@ -1,30 +1,45 @@
 import React, { useState, useEffect } from "react";
+import dayjs from "dayjs";
 import axios from "axios";
 
 const List = () => {
   const [people, setPeople] = useState([]);
   const [error, setError] = useState("");
 
-  // Fetch user data from API
   const fetchPeople = async () => {
     try {
-      const authToken = localStorage.getItem("authToken");
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const authToken = userData ? userData.authToken : null;
+      const loggedInEmpId = userData ? userData.empId : null;
 
       if (!authToken) {
         throw new Error("No auth token found. Please log in.");
       }
 
-      const response = await axios.get("http://localhost:5000/api/birthdays", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:5000/ofcbd/userprofile",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
-      console.log("API Response:", response.data); // Debugging
-      setPeople(response.data.data || []); // Ensure the response contains the data array
+      const filteredPeople = response.data.data.filter(
+        (person) => person.empId !== loggedInEmpId
+      );
+      console.log("Filtered People:", filteredPeople);
+
+      setPeople(filteredPeople || []);
     } catch (err) {
-      console.error("Error fetching user data:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Failed to fetch user data. Please try again.");
+      console.error(
+        "Error fetching user data:",
+        err.response?.data || err.message
+      );
+      setError(
+        err.response?.data?.message ||
+          "Failed to fetch user data. Please try again."
+      );
     }
   };
 
@@ -32,10 +47,8 @@ const List = () => {
     fetchPeople();
   }, []);
 
-  // Function to format birth date
   const formatBirthDate = (date) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(date).toLocaleDateString(undefined, options);
+    return dayjs(date).format("MMMM D, YYYY");
   };
 
   return (
@@ -44,20 +57,32 @@ const List = () => {
       {people.length > 0 ? (
         <ul className="space-y-4">
           {people.map((person) => {
-            const { id, name, birthDate, image } = person;
+            const { id, name, dob, image } = person;
             return (
               <li
                 key={id}
                 className="flex items-center space-x-4 border-b pb-4 last:border-none"
               >
-                <img
-                  src={image}
-                  alt={name}
-                  className="w-16 h-16 object-cover rounded-full shadow-md"
-                />
+                {image ? (
+                  <img
+                    src={image}
+                    alt={name}
+                    className="w-16 h-16 object-cover rounded-full shadow-md"
+                  />
+                ) : (
+                  <span
+                    className="w-16 h-16 flex items-center justify-center rounded-full shadow-md bg-gray-200 text-2xl"
+                    role="img"
+                    aria-label="Fallback Emoji"
+                  >
+                    😀
+                  </span>
+                )}
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-700">{name}</h4>
-                  <p className="text-gray-500">{formatBirthDate(birthDate)}</p>
+                  <h4 className="text-lg font-semibold text-gray-700">
+                    {name}
+                  </h4>
+                  <p className="text-gray-500">{formatBirthDate(dob)}</p>
                 </div>
               </li>
             );

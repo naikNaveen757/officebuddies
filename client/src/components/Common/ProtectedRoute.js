@@ -6,8 +6,9 @@ const ProtectedRoute = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const authToken = typeof window !== "undefined" ? localStorage.getItem("authToken") : null;
-
+    const userData = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userData")) : null;
+    const authToken = userData ? userData.authToken : null;
+        
     if (!authToken) {
       router.push("/");
     } else {

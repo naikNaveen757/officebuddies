@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Header from "@/components/Header";
+import Header from "@/components/Common/Header";
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -25,7 +25,7 @@ const Registration = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/register", {
+      const response = await fetch("http://localhost:5000/ofcbd/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const Registration = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-dark-background p-4">
+      <div className="flex flex-col items-center justify-center bg-white dark:bg-dark-background p-4">
         {/* Registration Form */}
         <div className="max-w-md w-full bg-gray-300 dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex justify-center h-48">
@@ -69,8 +69,9 @@ const Registration = () => {
 
           {message && (
             <p
-              className={`text-center mb-4 ${isSuccess ? "text-green-500" : "text-red-500"
-                }`}
+              className={`text-center mb-4 ${
+                isSuccess ? "text-green-500" : "text-red-500"
+              }`}
             >
               {message}
             </p>
