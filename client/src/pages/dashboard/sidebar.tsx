@@ -7,7 +7,7 @@ const Sidebar = () => {
   const handleLogout = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("userData");
-      window.location.href = "/"; // Redirect to home after logout
+      window.location.href = "/"; 
     }
   };
 

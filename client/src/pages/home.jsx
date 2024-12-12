@@ -9,6 +9,7 @@ const HomePage = () => {
     <div className="container mx-auto p-4">
       <Header />
       <List />
+      <div></div>
     </div>
     </ProtectedRoute>
 
